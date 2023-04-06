@@ -10,6 +10,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RevokeFormulaireComponent } from './revoke-formulaire/revoke-formulaire.component';
 import {MatInputModule} from "@angular/material/input";
 import { ConfirmationMailComponent } from './confirmation-mail/confirmation-mail.component';
+import {MatButtonModule} from "@angular/material/button";
+import { FormDownloadComponent } from './form-download/form-download.component';
 
 @NgModule({
   declarations: [
@@ -17,15 +19,17 @@ import { ConfirmationMailComponent } from './confirmation-mail/confirmation-mail
     EmailFormulaireComponent,
     AccueilComponent,
     RevokeFormulaireComponent,
-    ConfirmationMailComponent
+    ConfirmationMailComponent,
+    FormDownloadComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MatIconModule,
-    BrowserAnimationsModule,
-    MatInputModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        MatIconModule,
+        BrowserAnimationsModule,
+        MatInputModule,
+        MatButtonModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

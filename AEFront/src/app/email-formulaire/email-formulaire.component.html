@@ -1,7 +1,19 @@
 <p>email-formulaire works!</p>
 
-<mat-form-field appearance="fill">
-  <mat-label>email</mat-label>
-  <input matInput placeholder="email" type="email" required>
+<form>
+  <mat-form-field appearance="fill" >
+    <mat-label>email</mat-label>
+    <input matInput placeholder="jean.dupont@isen.yncrea.fr" type="email" required>
+
+
+  </mat-form-field>
+
+  <strong>insérer votre CSR:</strong>
+  <button type="button" mat-raised-button (click)="fileInput.click()">Choose File</button>
+  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+
+
+
+
   <input type="submit" routerLink="/confirmation-mail">
-</mat-form-field>
+</form>
