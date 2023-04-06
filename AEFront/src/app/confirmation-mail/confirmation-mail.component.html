@@ -1,0 +1,7 @@
+<p>confirmation-mail works!</p>
+
+<mat-form-field hintLabel="6 characters" appearance="fill">
+  <mat-label>Enter some input</mat-label>
+  <input matInput #input maxlength="10" placeholder="Ex. Nougat">
+  <mat-hint align="end">{{input.value.length}}/6</mat-hint>
+</mat-form-field>
