@@ -1,6 +1,5 @@
 use std::fs;
 use std::io::Write;
-use log::{debug, info};
 
 use openssl::asn1::{Asn1Integer, Asn1Time};
 use openssl::bn::BigNum;
@@ -14,19 +13,24 @@ use openssl::x509::extension::{BasicConstraints, KeyUsage};
 use crate::acrconfig::AcrConfig;
 
 pub fn generate_acr(config: &AcrConfig) -> Result<(), String> {
+    // Don't generate certificate if it already exists
+    if fs::metadata("ca-root.cert.pem").is_ok() {
+        return Err("Certificate already exists".to_string());
+    }
+
     // Generate key pair
-    info!("Generating key pair");
+    println!("Generating key pair");
     let key = generate_key()?;
     // Generate Selfsigned certificate
-    info!("Generating selfsigned certificate");
+    println!("Generating selfsigned certificate");
     let certificate = generate_selfsigned_certificate(&config, &key)?;
     // Save certificate to file
-    info!("Saving certificate to file");
+    println!("Saving certificate to file");
     let pem_certificate = certificate.to_pem().map_err(|e| e.to_string())?;
     fs::File::create("ca-root.cert.pem").map_err(|e| e.to_string())?
         .write_all(&pem_certificate).map_err(|e| e.to_string())?;
     // Save key to file
-    info!("Saving key to file");
+    println!("Saving key to file");
     let pem_key = key.private_key_to_pem_pkcs8().map_err(|e| e.to_string())?;
     fs::File::create("ca-root.key.pem").map_err(|e| e.to_string())?
         .write_all(&pem_key).map_err(|e| e.to_string())?;
@@ -50,7 +54,6 @@ fn generate_selfsigned_certificate(config: &AcrConfig, key: &PKey<Private>) -> R
     builder.set_issuer_name(&x509_name).map_err(|e| e.to_string())?;
     builder.set_subject_name(&x509_name).map_err(|e| e.to_string())?;
 
-    debug!("Setting certificate validity");
     builder.set_not_before(
         &&Asn1Time::days_from_now(0).map_err(|e| e.to_string())?
     ).map_err(|e| e.to_string())?;
@@ -60,13 +63,11 @@ fn generate_selfsigned_certificate(config: &AcrConfig, key: &PKey<Private>) -> R
 
     builder.set_pubkey(key.as_ref()).map_err(|e| e.to_string())?;
 
-    debug!("Signing certificate");
     builder.sign(
         key.as_ref(),
         MessageDigest::sha384(),
     ).map_err(|e| e.to_string())?;
 
-    debug!("Setting extensions");
     builder.append_extension(
         BasicConstraints::new()
             .critical()
@@ -83,12 +84,11 @@ fn generate_selfsigned_certificate(config: &AcrConfig, key: &PKey<Private>) -> R
             .build().map_err(|e| e.to_string())?
     ).map_err(|e| e.to_string())?;
 
-    debug!("Setting serial number");
     builder.set_serial_number(
         &&Asn1Integer::from_bn(
             &&BigNum::from_u32(1).map_err(|e| e.to_string())?
         ).map_err(|e| e.to_string())?
     ).map_err(|e| e.to_string())?;
-    debug!("Building certificate");
+
     Ok(builder.build())
 }

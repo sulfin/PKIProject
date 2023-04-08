@@ -1,31 +1,40 @@
-use std::ops::Deref;
-
-use actix_web::{App, HttpServer, post, Responder, web};
-use log::{debug, LevelFilter};
-use simple_logger::SimpleLogger;
-
+use std::env::args;
+use std::process::exit;
+use acr::acr::generate_acr;
 use acr::acrconfig::AcrConfig;
 
-#[post("/generate-acr")]
-async fn generate_acr(config: web::Data<AcrConfig>) -> impl Responder {
-    let mut ret = "ACR generated";
-    acr::acr::generate_acr(config.into_inner().deref()).unwrap_or_else(|e| {
-        ret = "ACR generation failed";
-        println!("Error: {}", e);
-    });
-    ret
+fn main() {
+    let acrconfig = AcrConfig::default();
+
+    if args().len() < 2 {
+        print_usage();
+        exit(1)
+    }
+
+    match args().nth(1).unwrap().as_str() {
+        "root" => {
+            println!("Generating root certificate");
+            generate_acr(&acrconfig).unwrap_or_else(|e| {
+                eprintln!("Error: {}", e);
+                exit(1)
+            });
+        },
+        "intermediate" => {
+            println!("Signing intermediate certificate with root certificate");
+            todo!()
+        },
+        _ => {
+            println!("Unknown action");
+            print_usage();
+            exit(1)
+        }
+    }
+
 }
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    SimpleLogger::new().with_level(LevelFilter::Info).env().init().unwrap();
-    debug!("Debug logging enabled");
-    HttpServer::new(|| {
-        App::new()
-            .app_data(web::Data::new(AcrConfig::default()))
-            .service(generate_acr)
-    })
-        .bind(("127.0.0.1", 8080))?
-        .run()
-        .await
+fn print_usage() {
+    println!("Usage: {} <action>", args().nth(0).unwrap());
+    println!("Actions:");
+    println!("  root : Generate root certificate");
+    println!("  intermediate : Sign intermediate certificate");
 }
