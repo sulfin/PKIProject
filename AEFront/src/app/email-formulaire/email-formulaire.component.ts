@@ -20,10 +20,9 @@ export class EmailFormulaireComponent {
       reader.onload = (e: any) => {
         this.srcResult = e.target.result;
       };
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/front
+
+
       reader.readAsArrayBuffer(inputNode.files[0]);
     }
   }
