@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
+import {Router} from "@angular/router";
+import {RequestService} from "../request.service";
 
 @Component({
   selector: 'app-confirmation-mail',
@@ -8,7 +10,7 @@ import {HttpClient} from "@angular/common/http";
 })
 export class ConfirmationMailComponent implements OnInit {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router, private request: RequestService) { }
 
     ngOnInit() {
       let a: String
@@ -18,10 +20,8 @@ export class ConfirmationMailComponent implements OnInit {
         x = this.getRandomInt(10)
         //convert x to string and concatenate it to a
         a = a + x.toString()
-
       }
       console.log(a)
-
     }
 
     getRandomInt(max: number) {
@@ -32,11 +32,19 @@ export class ConfirmationMailComponent implements OnInit {
     const otp = (<HTMLInputElement>document.getElementById('otp')).value;
     const formData = new FormData();
     formData.append('OTP', otp);
-
     const uploadRes = this.http.post('http://localhost:8740/api/csr/validation', formData);
-    uploadRes.subscribe((res) => {
+    uploadRes.subscribe((res: any) => {
       console.log(res);
+      if (res.status=="ok"){
+        this.loadurl(res)
+      }
     });
 
+  }
+
+  loadurl(res: any){
+    this.request.current_certificate_id = res.cert_id
+    this.request.revokation_OTP = res.otp_revokation
+    this.router.navigate(['/form-download'])
   }
 }

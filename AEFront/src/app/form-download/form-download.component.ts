@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {RequestService} from "../request.service";
 
 @Component({
   selector: 'app-form-download',
@@ -6,6 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./form-download.component.scss']
 })
 export class FormDownloadComponent  {
+
+  constructor(public request: RequestService) {
+  }
+
+
 
 
 }
