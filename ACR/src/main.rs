@@ -1,5 +1,6 @@
 use std::env::args;
 use std::process::exit;
+use acr::aci;
 use acr::acr::generate_acr;
 use acr::acrconfig::AcrConfig;
 
@@ -21,7 +22,10 @@ fn main() {
         },
         "intermediate" => {
             println!("Signing intermediate certificate with root certificate");
-            todo!()
+            aci::generate_aci().unwrap_or_else(|e| {
+                eprintln!("Error: {}", e);
+                exit(1)
+            });
         },
         _ => {
             println!("Unknown action");
