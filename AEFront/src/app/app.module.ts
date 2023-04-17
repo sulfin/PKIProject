@@ -31,10 +31,14 @@ import {HttpClientModule} from "@angular/common/http";
         MatIconModule,
         BrowserAnimationsModule,
         MatInputModule,
+<<<<<<< HEAD
         MatButtonModule,
         FormsModule,
         HttpClientModule
 
+=======
+        MatButtonModule
+>>>>>>> origin/front
     ],
   providers: [],
   bootstrap: [AppComponent]
