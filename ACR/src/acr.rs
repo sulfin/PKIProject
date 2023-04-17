@@ -8,13 +8,13 @@ use openssl::hash::MessageDigest;
 use openssl::nid::Nid;
 use openssl::pkey::{PKey, Private};
 use openssl::x509::{X509, X509Builder, X509NameBuilder};
-use openssl::x509::extension::{BasicConstraints, KeyUsage};
+use openssl::x509::extension::{AuthorityKeyIdentifier, BasicConstraints, KeyUsage, SubjectKeyIdentifier};
 
 use crate::acrconfig::AcrConfig;
 
 pub fn generate_acr(config: &AcrConfig) -> Result<(), String> {
     // Don't generate certificate if it already exists
-    if fs::metadata("ca-root.cert.pem").is_ok() {
+    if fs::metadata("ca-root.crt").is_ok() {
         return Err("Certificate already exists".to_string());
     }
 
@@ -27,7 +27,7 @@ pub fn generate_acr(config: &AcrConfig) -> Result<(), String> {
     // Save certificate to file
     println!("Saving certificate to file");
     let pem_certificate = certificate.to_pem().map_err(|e| e.to_string())?;
-    fs::File::create("ca-root.cert.pem").map_err(|e| e.to_string())?
+    fs::File::create("ca-root.crt").map_err(|e| e.to_string())?
         .write_all(&pem_certificate).map_err(|e| e.to_string())?;
     // Save key to file
     println!("Saving key to file");
@@ -63,10 +63,7 @@ fn generate_selfsigned_certificate(config: &AcrConfig, key: &PKey<Private>) -> R
 
     builder.set_pubkey(key.as_ref()).map_err(|e| e.to_string())?;
 
-    builder.sign(
-        key.as_ref(),
-        MessageDigest::sha384(),
-    ).map_err(|e| e.to_string())?;
+
 
     builder.append_extension(
         BasicConstraints::new()
@@ -88,6 +85,25 @@ fn generate_selfsigned_certificate(config: &AcrConfig, key: &PKey<Private>) -> R
         &&Asn1Integer::from_bn(
             &&BigNum::from_u32(1).map_err(|e| e.to_string())?
         ).map_err(|e| e.to_string())?
+    ).map_err(|e| e.to_string())?;
+
+    builder.append_extension(
+        SubjectKeyIdentifier::new()
+            .build(&builder.x509v3_context(None, None)
+            ).map_err(|e| e.to_string())?
+    ).map_err(|e| e.to_string())?;
+
+    builder.append_extension(
+        AuthorityKeyIdentifier::new()
+            .keyid(true)
+            .build(
+                &builder.x509v3_context(None, None)
+            ).map_err(|e| e.to_string())?
+    ).map_err(|e| e.to_string())?;
+
+    builder.sign(
+        key.as_ref(),
+        MessageDigest::sha384(),
     ).map_err(|e| e.to_string())?;
 
     Ok(builder.build())
