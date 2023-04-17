@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './form-download.component.html',
   styleUrls: ['./form-download.component.scss']
 })
-export class FormDownloadComponent {
+export class FormDownloadComponent  {
+
 
 }

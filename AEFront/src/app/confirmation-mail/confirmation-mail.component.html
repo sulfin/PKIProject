@@ -2,11 +2,11 @@
 <form>
 <mat-form-field hintLabel="6 characters" appearance="fill">
   <mat-label>Enter some input</mat-label>
-  <input matInput #input maxlength="10" placeholder="Ex. Nougat">
+  <input matInput #input maxlength="10" placeholder="Ex. Nougat" type="otp" id="otp">
   <mat-hint align="end">{{input.value.length}}/6</mat-hint>
 
 
 </mat-form-field>
 
-<input type="submit" routerLink="/form-download">
+<input type="submit" routerLink="/form-download" (click)="submitForm()">
 </form>

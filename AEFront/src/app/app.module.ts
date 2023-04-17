@@ -12,6 +12,9 @@ import {MatInputModule} from "@angular/material/input";
 import { ConfirmationMailComponent } from './confirmation-mail/confirmation-mail.component';
 import {MatButtonModule} from "@angular/material/button";
 import { FormDownloadComponent } from './form-download/form-download.component';
+import {FormsModule} from "@angular/forms";
+import {HttpClientModule} from "@angular/common/http";
+
 
 @NgModule({
   declarations: [
@@ -28,7 +31,10 @@ import { FormDownloadComponent } from './form-download/form-download.component';
         MatIconModule,
         BrowserAnimationsModule,
         MatInputModule,
-        MatButtonModule
+        MatButtonModule,
+        FormsModule,
+        HttpClientModule
+
     ],
   providers: [],
   bootstrap: [AppComponent]
