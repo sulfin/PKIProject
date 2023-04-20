@@ -1,0 +1,12 @@
+<p>confirmation-mail works!</p>
+<form>
+<mat-form-field hintLabel="6 characters" appearance="fill">
+  <mat-label>Enter some input</mat-label>
+  <input matInput #input maxlength="6" placeholder="123456" type="otp" id="otp">
+  <mat-hint align="end">{{input.value.length}}/6</mat-hint>
+
+
+</mat-form-field>
+
+<input type="submit" routerLink="/form-download" (click)="submitForm()">
+</form>

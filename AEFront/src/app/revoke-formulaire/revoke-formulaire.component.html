@@ -1,0 +1,20 @@
+<p>revoke-formulaire works!</p>
+
+<form>
+  <mat-form-field appearance="fill">
+    <mat-label>certificate-id</mat-label>
+    <input matInput type="text" id="certid">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>email</mat-label>
+    <input matInput type="email" id="email">
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>OTP</mat-label>
+    <input matInput type="text" id="otp">
+  </mat-form-field>
+
+  <input type="submit" (click)="submitForm()">
+</form>

@@ -1,0 +1,15 @@
+<p>email-formulaire works!</p>
+
+<form  #myForm="ngForm" method="post">
+  <mat-form-field appearance="fill" >
+    <mat-label>email</mat-label>
+    <input matInput placeholder="jean.dupont@isen.yncrea.fr" type="email" id="email" required>
+  </mat-form-field>
+
+  <strong>insérer votre CSR:</strong>
+  <button type="button" mat-raised-button (click)="fileInput.click()" (change)="$event">Choose File</button>
+  <input hidden (change)="onFileSelected()" #fileInput type="file" id="file">
+
+
+  <button type="button" (click)="submitForm()">envoyer</button>
+</form>

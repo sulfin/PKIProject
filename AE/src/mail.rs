@@ -1,7 +1,7 @@
+use actix_multipart::form::json::JsonFieldError::ContentType;
 use lettre::message::header::ContentType;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
-use serde_json::{json, to_string, Value};
 
 
 async fn mail(custmail:&str, otp:&str) -> Result<(), lettre::Error> {
