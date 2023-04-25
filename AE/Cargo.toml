@@ -11,6 +11,7 @@ env_logger = "0.8"
 
 actix-web = "4"
 actix-multipart = "0.6.0"
+actix-cors = "0.6.4"
 lettre = "0.10"
 openssl = "0.10.49"
 

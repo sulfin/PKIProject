@@ -1,5 +1,7 @@
 use std::{fs, io};
 use std::io::{Error, ErrorKind, Read, Result, Write};
+use actix_cors::Cors;
+
 use actix_multipart::form::MultipartForm;
 use actix_multipart::form::tempfile::{TempFile, TempFileConfig};
 use actix_multipart::form::text::Text;
@@ -9,16 +11,140 @@ use openssl::hash::{hash, MessageDigest};
 use openssl::nid::Nid;
 use openssl::rand::rand_bytes;
 use openssl::x509::X509Req;
-
-
+use serde::Deserialize;
 use serde_json::json;
-use ae::config::{AEDatabase, CSRDatabase};
+use ae::aci;
+use ae::aci::generate_otp;
 
+use ae::config::{AEDatabase, CSRDatabase};
 
 #[derive(Debug, MultipartForm)]
 struct CSRFormRequest {
     email: Text<String>,
     csr: TempFile,
+}
+
+#[derive(Debug, Deserialize)]
+struct CSRFormValidation {
+    otp: String,
+    email: String,
+}
+
+#[post("/csr/validation")]
+async fn csr_validation(
+    form: web::Json<CSRFormValidation>
+) -> impl Responder {
+    let form = form.into_inner();
+    debug!("csr validation: {:?}", form);
+
+    let db = AEDatabase::get();
+    if let Err(e) = db {
+        error!("Error while getting database: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    let mut db = db.unwrap();
+    let csr_db = db.get_csr(&form.email);
+    if let None = csr_db {
+        error!("Error while getting csr: {}", "csr not found");
+        return HttpResponse::BadRequest().json(
+            json!({
+                "status": "error",
+                "message": "csr not found"
+            })
+        );
+    }
+    let csr_db = csr_db.unwrap();
+    if csr_db.otp != form.otp {
+        error!("Error while getting csr: {}", "otp is not valid");
+        return HttpResponse::BadRequest().json(
+            json!({
+                "status": "error",
+                "message": "otp is not valid"
+            })
+        );
+    }
+    // load csr
+    let csr = fs::read_to_string(&csr_db.csr_path);
+    if let Err(e) = csr {
+        error!("Error while reading csr: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    let csr = csr.unwrap();
+    let csr = X509Req::from_pem(csr.as_bytes());
+    if let Err(e) = csr {
+        error!("Error while parsing csr: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    let csr = csr.unwrap();
+
+    // Create crt
+    let crt = aci::create_user_crt(&form.email, &csr, &db);
+    if let Err(e) = crt {
+        error!("Error while creating crt: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    let crt = crt.unwrap();
+    let res = db.clone().add_crt(&crt);
+    if let Err(e) = res {
+        error!("Error while adding crt: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    // Remove crs
+    let res = fs::remove_file(&csr_db.csr_path);
+    if let Err(e) = res {
+        error!("Error while removing csr: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+    let res = db.remove_csr(&form.email);
+    if let Err(e) = res {
+        error!("Error while removing csr: {}", e);
+        return HttpResponse::InternalServerError().json(
+            json!({
+                "status": "error",
+                "message": e.to_string()
+            })
+        );
+    }
+
+
+    HttpResponse::Ok().json(
+        json!({
+            "status": "ok",
+            "message": "otp is valid",
+            "otp_revok": &crt.otp_revoc,
+            "crt_id": &crt.crt_id,
+        })
+    )
 }
 
 #[post("/csr/request")]
@@ -97,7 +223,7 @@ async fn csr_request(
     debug!("csr saved to file: ./csr/{}.csr", csr_name);
 
     //save csr to database
-    let mut db = AEDatabase::get();
+    let db = AEDatabase::get();
     if let Err(e) = db {
         error!("Error while getting database: {}", e);
         return HttpResponse::InternalServerError().json(
@@ -166,7 +292,7 @@ fn verify_csr(email: &str, csr: &X509Req) -> Result<bool> {
 
     // verify email
     let subject = csr.subject_name();
-    let subject_email = subject.entries_by_nid(Nid::COMMONNAME).next();
+    let subject_email = subject.entries_by_nid(Nid::PKCS9_EMAILADDRESS).next();
     if subject_email.is_none() {
         return Ok(false);
     }
@@ -176,12 +302,6 @@ fn verify_csr(email: &str, csr: &X509Req) -> Result<bool> {
         return Ok(false);
     }
     Ok(true)
-}
-
-fn generate_otp(len: usize) -> Result<String> {
-    let mut buf = vec![0u8; len];
-    rand_bytes(&mut buf).map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
-    Ok(buf.iter().map(|x| format!("{}", x % 10)).collect::<String>())
 }
 
 #[actix_web::main]
@@ -195,14 +315,25 @@ async fn main() -> Result<()> {
         log::info!("creating csr directory");
         fs::create_dir_all("./csr")?;
     }
+    if fs::metadata("./certs").is_err() {
+        log::info!("creating certs directory");
+        fs::create_dir_all("./certs")?;
+    }
 
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allow_any_origin()
+            .allow_any_method()
+            .allow_any_header();
+
         App::new()
             .wrap(middleware::Logger::default())
+            .wrap(cors)
             .app_data(TempFileConfig::default().directory("./tmp"))
             .service(
                 web::scope("/api")
                     .service(csr_request)
+                    .service(csr_validation)
             )
     })
         .bind(("0.0.0.0", 8740))?

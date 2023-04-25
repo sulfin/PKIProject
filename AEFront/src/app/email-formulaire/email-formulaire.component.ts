@@ -10,6 +10,7 @@ import {Router} from "@angular/router";
 export class EmailFormulaireComponent {
   constructor(private http: HttpClient, private router: Router) {
   }
+
   srcResult: any;
 
   onFileSelected() {
@@ -20,7 +21,6 @@ export class EmailFormulaireComponent {
       reader.onload = (e: any) => {
         this.srcResult = e.target.result;
       };
-
 
 
       reader.readAsArrayBuffer(inputNode.files[0]);
@@ -36,17 +36,20 @@ export class EmailFormulaireComponent {
     const formData = new FormData();
     formData.append('csr', file, file.name);
     formData.append('email', email);
-    const uploadRes = this.http.post('http://192.168.16.42:8740/api/csr/request', formData);
+    const uploadRes = this.http.post('http://localhost:8740/api/csr/request', formData);
     uploadRes.subscribe((res: any) => {
       console.log(res)
 
-      if (res.status=="ok")
+      if (res.status == "ok")
         this.loadurl();
 
     });
   }
 
-  loadurl(){
-    this.router.navigate(['/confirmation-mail'])
+  loadurl() {
+    this.router.navigate(
+      ['/confirmation-mail'],
+      {state: {email: (<HTMLInputElement>document.getElementById('email')).value}}
+    )
   }
 }
