@@ -4,7 +4,7 @@ use lettre::{Message, SmtpTransport, Transport};
 use serde_json::{to_string, Value};
 
 
-async fn mail(custmail:&str, otp:&str) {
+pub async fn mail(custmail:&str, otp: String) {
     let mailcred = {
         // Load the first file into a string.
         let text = std::fs::read_to_string("../mailcred.json").unwrap();
@@ -12,8 +12,9 @@ async fn mail(custmail:&str, otp:&str) {
         // Parse the string into a dynamically-typed JSON structure.
         serde_json::from_str::<Value>(&text).unwrap()
     };
+    let envoyeur = mailcred["username"].as_str().unwrap().clone();
     let email = Message::builder()
-        .from("NoBody <nobody@domain.tld>".parse().unwrap())
+        .from(envoyeur.parse().unwrap())
         .to(custmail.parse().unwrap())
         .subject("OTP code")
         .header(ContentType::TEXT_PLAIN)

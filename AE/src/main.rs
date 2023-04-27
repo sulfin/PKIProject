@@ -13,67 +13,14 @@ use openssl::x509::X509Req;
 
 use serde_json::json;
 use ae::config::{AEDatabase, CSRDatabase};
-
+use ae::mail;
+use crate::mail::mail;
 
 #[derive(Debug, MultipartForm)]
 struct CSRFormRequest {
     email: Text<String>,
     csr: TempFile,
 }
-#[post("/form-email")]
-//call mail.rs to send an email with the otp
-async fn form_email(
-    MultipartForm(form): MultipartForm<CSRFormRequest>
-) -> impl Responder {
-    debug!("csr request: {:?}", form);
-    let mut db = AEDatabase::get();
-    if let Err(e) = db {
-        error!("Error while getting database: {}", e);
-        return HttpResponse::InternalServerError().json(
-            json!({
-                "status": "error",
-                "message": e.to_string()
-            })
-        );
-    }
-    let mut db = db.unwrap();
-    let otp = generate_otp(6);
-    if let Err(e) = otp {
-        error!("Error while generating otp: {}", e);
-        return HttpResponse::InternalServerError().json(
-            json!({
-                "status": "error",
-                "message": e.to_string()
-            })
-        );
-    }
-    let otp = otp.unwrap();
-    let res = db.add_csr(
-        CSRDatabase {
-            email: form.email.to_string(),
-            csr_path: format!("./csr/{csr_name}.csr"),
-            otp: otp.to_string(),
-        }
-    );
-    if let Err(e) = res {
-        error!("Error while adding csr to database: {}", e);
-        return HttpResponse::InternalServerError().json(
-            json!({
-                "status": "error",
-                "message": e.to_string()
-            })
-        );
-    }
-    debug!("csr added to database: {:?}", res.unwrap());
-    HttpResponse::Ok().json(
-        json!({
-            "status": "ok",
-            "message": "csr added to database"
-        })
-    )
-}
-
-
 #[post("/csr/request")]
 async fn csr_request(
     MultipartForm(form): MultipartForm<CSRFormRequest>
@@ -189,7 +136,10 @@ async fn csr_request(
         );
     }
 
-    //send otp to email
+    //send otp to email using mail.rs
+    mail(&**form.email, otp.to_string()).await;
+
+
 
     HttpResponse::Ok().json(
         json!({
