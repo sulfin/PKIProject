@@ -70,15 +70,15 @@ fn generate_user_crt(user_csr: &X509ReqRef) -> Result<X509, Error> {
             .build()?
     )?;
 
-    user_crt.append_extension(
-        SubjectKeyIdentifier::new()
-            .build(&user_crt.x509v3_context(None, None))?
-    )?;
-    user_crt.append_extension(
-        AuthorityKeyIdentifier::new()
-            .keyid(true)
-            .build(&user_crt.x509v3_context(Some(ica_crt.as_ref()), None))?
-    )?;
+    // user_crt.append_extension(
+    //     SubjectKeyIdentifier::new()
+    //         .build(&user_crt.x509v3_context(None, None))?
+    // )?;
+    // user_crt.append_extension(
+    //     AuthorityKeyIdentifier::new()
+    //         .keyid(true)
+    //         .build(&user_crt.x509v3_context(Some(ica_crt.as_ref()), None))?
+    // )?;
 
 
     user_crt.sign(ica_key.as_ref(), MessageDigest::sha256())?;
