@@ -36,7 +36,7 @@ export class EmailFormulaireComponent {
     const formData = new FormData();
     formData.append('csr', file, file.name);
     formData.append('email', email);
-    const uploadRes = this.http.post('http://192.168.16.42:8740/api/csr/request', formData);
+    const uploadRes = this.http.post('http://127.0.0.1:8740/api/csr/request', formData);
     uploadRes.subscribe((res: any) => {
       console.log(res)
 
