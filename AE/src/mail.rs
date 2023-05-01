@@ -7,7 +7,7 @@ use serde_json::{to_string, Value};
 pub async fn mail(custmail:&str, otp: String) {
     let mailcred = {
         // Load the first file into a string.
-        let text = std::fs::read_to_string("../mailcred.json").unwrap();
+        let text = std::fs::read_to_string("mailcred.json").unwrap();
 
         // Parse the string into a dynamically-typed JSON structure.
         serde_json::from_str::<Value>(&text).unwrap()
