@@ -6,8 +6,8 @@ import {HttpClient} from "@angular/common/http";
 })
 export class RequestService {
   baseurl = 'http://localhost:8740/api';
-  certificate_base='/crt/crt'
-  full_chain_base='/crt/fullchain'
+  certificate_base='/crt/crt/'
+  full_chain_base='/crt/fullchain/'
   root_ca_base='/crt/rootca.crt'
   current_certificate_id = '';
   revokation_OTP = '';
@@ -17,7 +17,7 @@ export class RequestService {
   }
 
   public getcrturl() {
-    return this.baseurl + this.certificate_base + this.current_certificate_id;
+    return this.baseurl + this.certificate_base + this.current_certificate_id + ".crt";
   }
 
   public getrootcaurl() {
