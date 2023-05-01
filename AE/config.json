@@ -1,0 +1,11 @@
+{
+  "csrs": [],
+  "crts": [
+    {
+      "email": "projet2019.ljs@gmail.com",
+      "crt_id": "705cc8d6d4702fcd5870987e67ceafda23fb0e79e55fc9cf3033479b3fab09bb",
+      "crt_path": "./certs/705cc8d6d4702fcd5870987e67ceafda23fb0e79e55fc9cf3033479b3fab09bb.crt",
+      "otp_revoc": "5702712715250378378562055936379614990954"
+    }
+  ]
+}
