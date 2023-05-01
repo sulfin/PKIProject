@@ -9,7 +9,7 @@ use openssl::x509::{X509, X509ReqRef};
 use openssl::x509::extension::{AuthorityKeyIdentifier, ExtendedKeyUsage, KeyUsage, SubjectAlternativeName, SubjectKeyIdentifier};
 use crate::config::{AEDatabase, CRTDatabase};
 
-pub fn create_user_crt(email: &str, user_csr: &X509ReqRef, db: &AEDatabase) -> Result<CRTDatabase, Error> {
+pub fn create_user_crt(email: &str, user_csr: &X509ReqRef) -> Result<CRTDatabase, Error> {
     let user_crt = generate_user_crt(user_csr)?;
     let crt_id = user_crt.digest(MessageDigest::sha256())?;
     let crt_id = crt_id.iter().map(|x| format!("{:02x}", x)).collect::<String>();

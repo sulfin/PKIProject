@@ -60,6 +60,7 @@ async fn csr_validation(
         );
     }
     let csr_db = csr_db.unwrap();
+    let csr_path = csr_db.csr_path.clone();
     if csr_db.otp != form.otp {
         error!("Error while getting csr: {}", "otp is not valid");
         return HttpResponse::BadRequest().json(
@@ -94,7 +95,7 @@ async fn csr_validation(
     let csr = csr.unwrap();
 
     // Create crt
-    let crt = aci::create_user_crt(&form.email, &csr, &db);
+    let crt = aci::create_user_crt(&form.email, &csr);
     if let Err(e) = crt {
         error!("Error while creating crt: {}", e);
         return HttpResponse::InternalServerError().json(
@@ -105,7 +106,7 @@ async fn csr_validation(
         );
     }
     let crt = crt.unwrap();
-    let res = db.clone().add_crt(&crt);
+    let res = db.add_crt(&crt);
     if let Err(e) = res {
         error!("Error while adding crt: {}", e);
         return HttpResponse::InternalServerError().json(
@@ -116,7 +117,7 @@ async fn csr_validation(
         );
     }
     // Remove crs
-    let res = fs::remove_file(&csr_db.csr_path);
+    let res = fs::remove_file(csr_path);
     if let Err(e) = res {
         error!("Error while removing csr: {}", e);
         return HttpResponse::InternalServerError().json(
