@@ -17,7 +17,8 @@ use ae::aci;
 use ae::aci::generate_otp;
 
 use ae::config::{AEDatabase, CSRDatabase};
-
+use ae::mail;
+use crate::mail::mail;
 #[derive(Debug, MultipartForm)]
 struct CSRFormRequest {
     email: Text<String>,
@@ -262,7 +263,10 @@ async fn csr_request(
         );
     }
 
-    //send otp to email
+    //send otp to email using mail.rs
+    mail(&**form.email, otp.to_string()).await;
+
+
 
     HttpResponse::Ok().json(
         json!({
