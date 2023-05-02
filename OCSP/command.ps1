@@ -1,0 +1,1 @@
+  openssl ocsp -no_nonce -issuer "chaine de certif" -cert "certif a test"  -VAfile "chaine de certif" -text -url http://ocsp.int-x3.letsencrypt.org/ -header Host=ocsp.int-x3.letsencrypt.org -respout ocsptest

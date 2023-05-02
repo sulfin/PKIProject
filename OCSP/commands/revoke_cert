@@ -1,0 +1,1 @@
+openssl ca -keyfile ca-root.key.pem -cert ca-root.crt -revoke my_ca/certs/10.pem -config validation.conf

@@ -1,0 +1,23 @@
+{
+  "csrs": [],
+  "crts": [
+    {
+      "email": "projet2019.ljs@gmail.com",
+      "crt_id": "705cc8d6d4702fcd5870987e67ceafda23fb0e79e55fc9cf3033479b3fab09bb",
+      "crt_path": "./certs/705cc8d6d4702fcd5870987e67ceafda23fb0e79e55fc9cf3033479b3fab09bb.crt",
+      "otp_revoc": "5702712715250378378562055936379614990954"
+    },
+    {
+      "email": "projet2019.ljs@gmail.com",
+      "crt_id": "8e646ff65d3b6f3bf0278f3d5d186d81ecda0e8c88b963ba4d3cb5eab94f99c1",
+      "crt_path": "./certs/8e646ff65d3b6f3bf0278f3d5d186d81ecda0e8c88b963ba4d3cb5eab94f99c1.crt",
+      "otp_revoc": "4859842254694859955363542020269844790955"
+    },
+    {
+      "email": "projet2019.ljs@gmail.com",
+      "crt_id": "0a52d291b4309589864fd9c701540c2728178b47d5ec9e56fa2156e549386810",
+      "crt_path": "./certs/0a52d291b4309589864fd9c701540c2728178b47d5ec9e56fa2156e549386810.crt",
+      "otp_revoc": "0367523385401316590732493936678589729234"
+    }
+  ]
+}

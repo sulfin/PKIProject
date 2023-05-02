@@ -1,0 +1,1 @@
+openssl ocsp -CAfile ca-root.crt -issuer ca-root.crt -cert my_ca/certs/10.pem -url http://127.0.0.1:8080 -resp_text -noverify
