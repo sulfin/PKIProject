@@ -1,11 +1,12 @@
 use std::{fs, io};
 use std::io::{Error, ErrorKind, Read, Result, Write};
 use actix_cors::Cors;
+use actix_files::NamedFile;
 
 use actix_multipart::form::MultipartForm;
 use actix_multipart::form::tempfile::{TempFile, TempFileConfig};
 use actix_multipart::form::text::Text;
-use actix_web::{App, HttpResponse, HttpServer, middleware, post, Responder, web};
+use actix_web::{App, get, HttpResponse, HttpServer, middleware, post, Responder, web};
 use log::{debug, error};
 use openssl::hash::{hash, MessageDigest};
 use openssl::nid::Nid;
@@ -309,6 +310,17 @@ fn verify_csr(email: &str, csr: &X509Req) -> Result<bool> {
     Ok(true)
 }
 
+#[get("/crt/rootca.crt")]
+async fn get_rootca() -> Result<NamedFile> {
+    Ok(NamedFile::open("./aci/ca-root.crt")?)
+}
+
+#[get("/crt/crt/{crt_id}.crt")]
+async fn get_crt(crt_id: web::Path<String>) -> Result<NamedFile> {
+    let crt_id = crt_id.into_inner();
+    Ok(NamedFile::open(format!("./certs/{crt_id}.crt", crt_id = crt_id))?)
+}
+
 #[actix_web::main]
 async fn main() -> Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
@@ -339,6 +351,8 @@ async fn main() -> Result<()> {
                 web::scope("/api")
                     .service(csr_request)
                     .service(csr_validation)
+                    .service(get_rootca)
+                    .service(get_crt)
             )
     })
         .bind(("0.0.0.0", 8740))?
