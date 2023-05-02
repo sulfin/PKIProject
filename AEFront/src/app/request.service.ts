@@ -23,6 +23,8 @@ export class RequestService {
   public getrootcaurl() {
     return this.baseurl + this.root_ca_base;
   }
+
+
   constructor(private http: HttpClient) {
   }
 }

@@ -1,0 +1,86 @@
+OCSP Request Data:
+    Version: 1 (0x0)
+    Requestor List:
+        Certificate ID:
+          Hash Algorithm: sha1
+          Issuer Name Hash: 6608E097F637DE2F512F095847415D2A22133F79
+          Issuer Key Hash: 3E0ADBB4E4EFED9A14AAFB935B8A1B4BA627FF02
+          Serial Number: 7A50AD9064FA4C5B3F6476E2A409A888FFE5F91C
+    Request Extensions:
+        OCSP Nonce: 
+            0410811FCF224E0EFDF23299D9179A78170E
+OCSP Response Data:
+    OCSP Response Status: successful (0x0)
+    Response Type: Basic OCSP Response
+    Version: 1 (0x0)
+    Responder Id: CN = francis, C = AU, ST = Some-State, O = Internet Widgits Pty Ltd
+    Produced At: May  2 20:26:55 2023 GMT
+    Responses:
+    Certificate ID:
+      Hash Algorithm: sha1
+      Issuer Name Hash: 6608E097F637DE2F512F095847415D2A22133F79
+      Issuer Key Hash: 3E0ADBB4E4EFED9A14AAFB935B8A1B4BA627FF02
+      Serial Number: 7A50AD9064FA4C5B3F6476E2A409A888FFE5F91C
+    Cert Status: unknown
+    This Update: May  2 20:26:55 2023 GMT
+
+    Response Extensions:
+        OCSP Nonce: 
+            0410811FCF224E0EFDF23299D9179A78170E
+    Signature Algorithm: sha256WithRSAEncryption
+    Signature Value:
+        73:1e:91:d9:07:37:03:66:55:41:54:e3:91:23:a1:59:27:1c:
+        53:2f:d1:38:45:ba:79:dd:e1:46:38:f0:59:ec:c3:5e:72:c4:
+        91:2b:39:a4:85:1a:dd:1b:b1:e4:f4:2a:4d:91:c1:84:cf:9f:
+        c9:cc:d0:83:ef:a3:3a:8e:e5:e7:23:f6:65:f2:da:06:a8:9e:
+        e9:43:e6:61:2b:b8:09:ea:c4:64:f1:32:93:d3:96:4b:3f:85:
+        86:00:99:2c:d2:ec:11:19:90:88:04:e7:20:c7:ee:ea:84:d4:
+        b3:94:74:ef:7e:9b:46:7a:a5:6c:7b:82:9d:df:95:af:cb:42:
+        5c:67:07:de:ee:ab:5e:25:01:31:06:e2:45:7e:b6:18:56:f0:
+        e5:b4:75:d6:53:a1:ed:40:44:be:67:59:b1:38:d8:58:f9:95:
+        32:96:ca:6e:99:85:c3:1c:79:ce:2a:71:14:0d:56:c3:4d:0c:
+        8e:9e:0b:6c:88:c7:68:d8:24:4a:5a:dd:13:28:b8:d6:16:12:
+        27:76:22:cb:95:ad:44:ef:ef:8f:b8:47:a2:81:6c:73:ba:f1:
+        b2:63:be:9b:3d:11:42:66:3a:36:37:09:16:46:11:9e:d3:02:
+        d4:97:26:c8:a4:65:b6:54:60:67:69:a9:63:32:10:7f:7a:dc:
+        fa:85:37:ee
+Certificate:
+    Data:
+        Version: 1 (0x0)
+        Serial Number: 16 (0x10)
+        Signature Algorithm: ecdsa-with-SHA256
+        Issuer: C=FR, CN=Pas Un Virus Sign
+        Validity
+            Not Before: May  1 14:57:53 2023 GMT
+            Not After : Apr 29 14:57:53 2028 GMT
+        Subject: CN=francis, C=AU, ST=Some-State, O=Internet Widgits Pty Ltd
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:c8:ad:6e:66:c4:49:ca:0a:1b:f0:86:1e:44:93:
+                    eb:90:29:91:75:05:f0:b5:5b:08:4d:7e:25:d0:d7:
+                    00:98:49:ab:bb:b2:77:f3:f1:b4:72:ea:41:52:06:
+                    b9:a7:fe:55:bc:d6:d0:b8:71:97:e5:75:c3:bc:6d:
+                    52:b9:cb:8a:6d:a8:4d:00:f1:59:67:c4:aa:0b:59:
+                    a5:fb:a1:96:4e:f4:b3:b8:24:6a:63:74:f0:46:ab:
+                    22:c1:0c:54:14:ec:d1:dc:cd:84:d5:0e:36:3a:b9:
+                    5b:55:b6:49:29:b5:f2:fa:6d:6c:e4:32:1f:27:2d:
+                    f6:7e:4a:7a:89:77:f0:e7:ac:c7:0a:64:3c:3e:37:
+                    d5:14:1c:39:03:99:5d:75:16:51:b9:ca:57:8b:7d:
+                    ea:35:4b:50:f2:f4:cf:c7:51:0b:24:8f:85:d3:a0:
+                    1a:31:b9:cb:0b:90:0f:68:35:98:ec:20:b8:b6:6b:
+                    03:3a:a9:1b:2d:42:1d:1b:76:2f:1e:be:3c:44:cc:
+                    41:e5:e4:29:61:63:51:81:6a:e4:58:a9:92:ff:a9:
+                    4a:2d:b4:32:08:c6:7a:18:99:a8:5b:48:c3:f4:5a:
+                    10:64:90:32:5e:fe:5d:25:37:f5:48:b5:f5:9c:d0:
+                    63:9c:88:1d:d3:3c:86:11:61:41:60:7f:25:6e:65:
+                    de:eb
+                Exponent: 65537 (0x10001)
+    Signature Algorithm: ecdsa-with-SHA256
+    Signature Value:
+        30:64:02:30:45:ba:c0:dc:b3:19:27:5b:17:1f:3f:88:84:17:
+        f6:95:86:9c:4c:6d:31:c8:6d:50:50:59:ce:67:94:cf:92:46:
+        f5:87:aa:2f:25:2a:42:99:f9:1c:7f:9a:1b:ca:c4:f1:02:30:
+        5f:ee:8d:48:ca:9e:d0:b8:ba:82:2b:25:a2:0c:bd:09:43:55:
+        88:b1:b3:6e:6c:b9:92:ed
